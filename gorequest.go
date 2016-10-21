@@ -398,6 +398,11 @@ func (s *SuperAgent) queryStruct(content interface{}) *SuperAgent {
 	return s
 }
 
+// (1)queryString json的方式解析
+// (2)queryString 把url编码后的数据解析
+// ParseQuery parses the URL-encoded query string and returns a map listing the values specified for each key.
+// ParseQuery always returns a non-nil map containing all the valid query parameters found; err describes the first decoding error encountered, if any.
+
 func (s *SuperAgent) queryString(content string) *SuperAgent {
 	var val map[string]string
 	if err := json.Unmarshal([]byte(content), &val); err == nil {
@@ -419,6 +424,7 @@ func (s *SuperAgent) queryString(content string) *SuperAgent {
 	return s
 }
 
+// add post 参数
 // As Go conventions accepts ; as a synonym for &. (https://github.com/golang/go/issues/2210)
 // Thus, Query won't accept ; in a querystring if we provide something like fields=f1;f2;f3
 // This Param is then created as an alternative method to solve this.
@@ -427,6 +433,10 @@ func (s *SuperAgent) Param(key string, value string) *SuperAgent {
 	return s
 }
 
+// 原型
+// transport的struct ， 元素 Dial  = func(network, addr string) (net.Conn, error)
+// return的value 和定义的不一致 这个咋回事??
+//
 func (s *SuperAgent) Timeout(timeout time.Duration) *SuperAgent {
 	s.Transport.Dial = func(network, addr string) (net.Conn, error) {
 		conn, err := net.DialTimeout(network, addr, timeout)
@@ -439,6 +449,10 @@ func (s *SuperAgent) Timeout(timeout time.Duration) *SuperAgent {
 	}
 	return s
 }
+
+// 怎样设计链式调用的函数
+// （1）链式调用的函数的返回类型还是输入的函数，类型一般为指针
+// （2）每个函数的内部都是加入一些字段到这个结构体内部
 
 // Set TLSClientConfig for underling Transport.
 // One example is you can use it to disable security check (https):
